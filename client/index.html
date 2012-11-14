@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+    <head>
+        <title>Reserved Words</title>
+        <link rel="stylesheet" type="text/css" href="styles/font-awesome.css">
+        <link rel="stylesheet" type="text/css" href="styles/bootstrap.css">
+        <link rel="stylesheet" type="text/css" href="styles/style.css">
+    </head>
+    <body>
+        <div id="wrapper">
+            <div id="nick-wrapper">
+                <span data-bind="visible: nick">Your nickname is set to:</span>
+                <input id="nick" placeholder="Nickname" data-bind="value:nick, disable: nick(), css:{disabled: !nick}"/>
+            </div>
+            <div id="friends-wrapper" data-bind="visible: nick">
+                <ul id="friends" class="nav nav-list">
+                    <li data-bind="css:{active: $root.selectedRoom().name == 'lobby'}">
+                        <a href="#" data-bind="click: $root.selectLobby">
+                            <span>Lobby</span>
+                            <i class="icon-comments-alt"></i>
+                        </a>
+                    </li>
+                    <!-- ko foreach: friends -->
+                        <li data-bind="css:{active: $root.selectedRoom().id == id}">
+                            <a href="#" data-bind="click: $root.selectFriend">
+                                <span data-bind="text: name"></span>
+                                <i class="icon-user"></i>
+                            </a>
+                        </li>
+                    <!-- /ko -->
+                </ul>
+            </div>
+            <div id="chat-wrapper"  data-bind="visible: nick()">
+                <div id="chat" data-bind="foreach: chats">
+                    <div data-bind="if: isVisible()">
+                        <div class="message-wrapper" data-bind="css: { server: name == 'SERVER' }">
+                            <span data-bind="text: sender.name"></span>:
+                            <span data-bind="text: message"></span>
+                        </div>
+                    </div>
+                </div>
+                <div id="input-wrapper">
+                    <input data-bind="hasfocus: nick(), value: messageText"/>
+                    <button class="btn btn-success" data-bind="click: sendMessage">Send</button>
+                </div>
+            </div>
+        </div>
+        <script src="/scripts/jquery.js"></script>
+        <script src="/scripts/knockout.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/scripts/custom.js"></script>
+    </body>
+</html>

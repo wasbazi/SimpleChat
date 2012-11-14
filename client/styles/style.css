@@ -1,0 +1,99 @@
+/** General Styles **/
+#wrapper{
+    margin: 50px auto;
+    width: 585px;
+}
+input {
+    background: #f3f3f3;
+    outline: 0;
+    padding: 3px 7px;
+    border-radius: 7px;
+    border: 1px solid #E9E9E9;
+    font-size: .95em;
+    line-height: 1.5em;
+    border: 1px solid #c9c9c9;
+}
+input:focus{
+    background: #fcfcfc;
+}
+
+/** Friends **/
+#friends-wrapper {
+    width: 200px;
+    display: inline-block;
+    padding: 5px 0;
+    background: #CCC;
+    border-radius: 5px;
+    box-shadow: 0 0 3px #888;
+}
+#friends{
+    background: #fff;
+}
+#friends li{
+    position: relative;
+}
+#friends i{
+    position: absolute;
+    right: 0;
+}
+
+/** Chat **/
+#chat-wrapper {
+    width: 350px;
+    display: inline-block;
+    vertical-align: top;
+    /*background: #c9c9c9;*/
+}
+#chat{
+    margin: 8px 8px 0;
+    background: white;
+    padding: 5px;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+    box-shadow: 0 0 2px #888;
+    height: 300px;
+}
+#chat .message-wrapper{
+    border-bottom: 1px solid #C8C8C8;
+    margin: 0 0 5px;
+    padding: 5px;
+}
+#chat .server {
+    color: red;
+    font-style: italic;
+}
+
+/** Message Input **/
+#input-wrapper input{
+    width: 258px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border: 0;
+    box-shadow: 0 0 2px #888;
+    display: inline-block;
+    height: 27px;
+    margin: 10px 0 10px 8px;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+}
+#input-wrapper button{
+    margin: 0px 0 0 -10px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    height: 34px;
+}
+#nick-wrapper {
+    text-shadow: 0 0 1px #888;
+    font-size: 1.05em;
+    display: block;
+    text-align: right;
+    margin: 10px 0;
+}
+#nick{
+    width: 150px;
+    font-weight: bold;
+}
+#nick[disabled], #nick.disabled {
+    border: 0;
+    background: 0;
+    box-shadow: 0 0 0;
+}
