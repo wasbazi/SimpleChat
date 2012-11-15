@@ -29,7 +29,7 @@ SocketConnection.prototype = {
     disconnect: function(){
         var disconnectedUser = deleteUser(this.id);
         if(disconnectedUser){
-            this.io.sockets.emit('friendDisconnected', { users: users, id: disconnectedUser.id});
+            this.io.sockets.emit('friendDisconnected', { users: users});
             var messageObj = { message: this.nickname + " Logged Off", name: 'SERVER' };
             this.io.sockets.emit('message', messageObj);
         }
@@ -43,9 +43,8 @@ SocketConnection.prototype = {
         this.id = users.length + 1;
 
         users.push({ sid: this.socket.id, name: this.nickname, id: this.id });
-        this.socket.broadcast.emit('friendJoined', {name: this.nickname, id: this.id});
+        this.socket.broadcast.emit('friendJoined', {name: this.nickname});
         this.socket.broadcast.emit('message', {message: this.nickname + " Logged On", name: "SERVER"});
-        this.socket.emit('confirmNickname', {name: this.nickname, id: this.id});
     }
 
 };

@@ -35,6 +35,7 @@ ReservedWordsViewModel.prototype = {
 
     friendJoined: function(f){ this.friends.push(f); },
     friendsList: function(f){ this.friends(f); },
+    friendDisconnected: function(data){ this.friends(data.users); },
 
     message: function(data){
         var message = new Message(data, this.selectedRoom);
@@ -49,11 +50,6 @@ ReservedWordsViewModel.prototype = {
             socket.emit( 'messageSent',  message);
             this.messageText('');
         }
-    },
-    friendDisconnected: function(data){
-        this.friends(data.users);
-        if(this.selectedRoom().id == data.id)
-            this.selectedRoom({type: 'room', name: 'lobby'});
     }
 
 };
