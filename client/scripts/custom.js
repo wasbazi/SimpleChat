@@ -52,8 +52,6 @@ ReservedWordsViewModel.prototype = {
     },
     friendDisconnected: function(data){
         this.friends(data.users);
-        if(this.selectedRoom().id == data.id)
-            this.selectedRoom({type: 'room', name: 'lobby'});
     }
 
 };

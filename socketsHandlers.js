@@ -27,25 +27,31 @@ function SocketConnection(io, socket){
 
 SocketConnection.prototype = {
     disconnect: function(){
-        var disconnectedUser = deleteUser(this.id);
-        if(disconnectedUser){
-            this.io.sockets.emit('friendDisconnected', { users: users, id: disconnectedUser.id});
-            var messageObj = { message: this.nickname + " Logged Off", name: 'SERVER' };
-            this.io.sockets.emit('message', messageObj);
-        }
+        this.socket.get('userData', function(err, userData){
+            var disconnectedUser = deleteUser(userData.id);
+            if(disconnectedUser){
+                this.io.sockets.emit('friendDisconnected', { users: users});
+                var messageObj = { message: userData.nickname + " Logged Off", name: 'SERVER' };
+                this.io.sockets.emit('message', messageObj);
+            }
+        }.bind(this) );
     },
     messageSent: function (data){
-        this.socket.emit('message', {message: data.text, name: 'You' });
-        this.socket.broadcast.emit('message', {message: data.text, name: this.nickname });
+        this.socket.get('userData', function(err, userData){
+            this.socket.emit('message', {message: data.text, name: 'You' });
+            this.socket.broadcast.emit('message', {message: data.text, name: userData.nickname });
+        }.bind(this) );
     },
     setNick: function(data){
-        this.nickname = data.name;
-        this.id = users.length + 1;
+        var nickname = data.name;
+        var id = users.length + 1;
 
-        users.push({ sid: this.socket.id, name: this.nickname, id: this.id });
-        this.socket.broadcast.emit('friendJoined', {name: this.nickname, id: this.id});
-        this.socket.broadcast.emit('message', {message: this.nickname + " Logged On", name: "SERVER"});
-        this.socket.emit('confirmNickname', {name: this.nickname, id: this.id});
+        this.socket.set('userData', {id: id, nickname: nickname}, function(){
+            users.push({ sid: this.socket.id, name: nickname, id: id });
+            this.socket.broadcast.emit('friendJoined', {name: nickname, id: id});
+            this.socket.broadcast.emit('message', {message: nickname + " Logged On", name: "SERVER"});
+            this.socket.emit('confirmNickname', {name: nickname, id: id});
+        }.bind(this) );
     }
 
 };
