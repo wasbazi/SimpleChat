@@ -31,28 +31,12 @@ SocketConnection.prototype = {
         if(disconnectedUser){
             this.io.sockets.emit('friendDisconnected', { users: users, id: disconnectedUser.id});
             var messageObj = { message: this.nickname + " Logged Off", name: 'SERVER' };
-            this.io.sockets.emit('newMessage', messageObj);
+            this.io.sockets.emit('message', messageObj);
         }
     },
     messageSent: function (data){
-        if (data.type == 'room')
-                this.publicMessage(data);
-        if (data.type == 'user')
-                this.privateMessage(data);
-    },
-    publicMessage: function(data){
-        var message = {message: data.text, name: this.nickname, sender: this.id, room: 'lobby'};
-        this.socket.emit('message', message);
-        this.socket.broadcast.emit('message', message);
-    },
-    privateMessage: function(data){
-        var user = findUser(data.id);
-        if(user){
-            var message = {message: data.text, name: this.nickname, sender: this.id, receiver: user.id};
-            this.socket.emit('message', message);
-            var individualSocket = this.io.sockets.socket(user.sid);
-            individualSocket.emit('message', message);
-        }
+        this.socket.emit('message', {message: data.text, name: 'You' });
+        this.socket.broadcast.emit('message', {message: data.text, name: this.nickname });
     },
     setNick: function(data){
         this.nickname = data.name;
@@ -60,6 +44,7 @@ SocketConnection.prototype = {
 
         users.push({ sid: this.socket.id, name: this.nickname, id: this.id });
         this.socket.broadcast.emit('friendJoined', {name: this.nickname, id: this.id});
+        this.socket.broadcast.emit('message', {message: this.nickname + " Logged On", name: "SERVER"});
         this.socket.emit('confirmNickname', {name: this.nickname, id: this.id});
     }
 

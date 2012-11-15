@@ -14,15 +14,15 @@
             </div>
             <div id="friends-wrapper" data-bind="visible: nick">
                 <ul id="friends" class="nav nav-list">
-                    <li data-bind="css:{active: $root.selectedRoom().name == 'lobby'}">
-                        <a href="#" data-bind="click: $root.selectLobby">
+                    <li class='active' ">
+                        <a href="#">
                             <span>Lobby</span>
                             <i class="icon-comments-alt"></i>
                         </a>
                     </li>
                     <!-- ko foreach: friends -->
-                        <li data-bind="css:{active: $root.selectedRoom().id == id}">
-                            <a href="#" data-bind="click: $root.selectFriend">
+                        <li>
+                            <a href="#">
                                 <span data-bind="text: name"></span>
                                 <i class="icon-user"></i>
                             </a>
@@ -32,11 +32,9 @@
             </div>
             <div id="chat-wrapper"  data-bind="visible: nick()">
                 <div id="chat" data-bind="foreach: chats">
-                    <div data-bind="if: isVisible()">
-                        <div class="message-wrapper" data-bind="css: { server: name == 'SERVER' }">
-                            <span data-bind="text: sender.name"></span>:
-                            <span data-bind="text: message"></span>
-                        </div>
+                    <div class="message-wrapper" data-bind="css: { server: sender == 'SERVER' }">
+                        <span data-bind="text: sender"></span>:
+                        <span data-bind="text: message"></span>
                     </div>
                 </div>
                 <div id="input-wrapper">
