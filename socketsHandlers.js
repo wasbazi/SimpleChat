@@ -5,7 +5,7 @@ function findUser(id){
         return false;
 
     var user = users.filter(function(x){
-        return x.id == id;
+        return x.id === id;
     });
     return user && user[0];
 }
@@ -29,9 +29,9 @@ SocketConnection.prototype = {
     disconnect: function(){
         var disconnectedUser = deleteUser(this.id);
         if(disconnectedUser){
-            this.io.sockets.emit('friendDisconnected', { users: users, id: disconnectedUser.id});
-            var messageObj = { message: this.nickname + " Logged Off", name: 'SERVER' };
-            this.io.sockets.emit('newMessage', messageObj);
+            this.io.sockets.emit('friendDisconnected', { users: users, disconnectedId: disconnectedUser.id});
+            var messageObj = { message: this.nickname + " Logged Off", sender: 'SERVER', name: 'SERVER', room: 'lobby'};
+            this.io.sockets.emit('message', messageObj);
         }
     },
     messageSent: function (data){
@@ -41,9 +41,9 @@ SocketConnection.prototype = {
                 this.privateMessage(data);
     },
     publicMessage: function(data){
-        var message = {message: data.text, name: this.nickname, sender: this.id, room: 'lobby'};
-        this.socket.emit('message', message);
-        this.socket.broadcast.emit('message', message);
+        console.log('data', data);
+        this.socket.emit('message', {message: data.text, sender: this.id, room: 'lobby', name: "You"});
+        this.socket.broadcast.emit('message', {message: data.text, sender: this.id, room: 'lobby', name: this.nickname});
     },
     privateMessage: function(data){
         var user = findUser(data.id);

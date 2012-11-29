@@ -13,29 +13,41 @@
                 <input id="nick" placeholder="Nickname" data-bind="value:nick, disable: nick(), css:{disabled: !nick}"/>
             </div>
             <div id="friends-wrapper" data-bind="visible: nick">
+                <div id="page-up" class="friends-pager">
+                    <a data-bind="click: friends.scrollUp, visible: friends.hasScrollUp" href="#">
+                        <i class="icon-chevron-up"></i>
+                    </a>
+                </div>
                 <ul id="friends" class="nav nav-list">
-                    <li data-bind="css:{active: $root.selectedRoom().name == 'lobby'}">
-                        <a href="#" data-bind="click: $root.selectLobby">
+                    <li data-bind="css:{active: friends.selectedRoom().name == 'lobby'}">
+                        <a href="#" data-bind="click: friends.selectLobby">
                             <span>Lobby</span>
                             <i class="icon-comments-alt"></i>
                         </a>
                     </li>
-                    <!-- ko foreach: friends -->
-                        <li data-bind="css:{active: $root.selectedRoom().id == id}">
-                            <a href="#" data-bind="click: $root.selectFriend">
+                    <!-- ko foreach: friends.renderedUsers -->
+                        <li data-bind="if: $root.id() != id, css:{active: $root.friends.selectedRoom().id == id}">
+                            <a href="#" data-bind="click: $root.friends.selectFriend">
                                 <span data-bind="text: name"></span>
                                 <i class="icon-user"></i>
                             </a>
                         </li>
                     <!-- /ko -->
                 </ul>
+                <div id="page-down" class="friends-pager">
+                    <a data-bind="click: friends.scrollDown, visible: friends.hasScrollDown" href="#">
+                        <i class="icon-chevron-down"></i>
+                    </a>
+                </div>
             </div>
             <div id="chat-wrapper"  data-bind="visible: nick()">
-                <div id="chat" data-bind="foreach: chats">
-                    <div data-bind="if: isVisible()">
-                        <div class="message-wrapper" data-bind="css: { server: name == 'SERVER' }">
-                            <span data-bind="text: sender.name"></span>:
-                            <span data-bind="text: message"></span>
+                <div id="chat">
+                    <div id="chat-inner" data-bind="foreach: chats">
+                        <div data-bind="if: isVisible()">
+                            <div class="message-wrapper" data-bind="css: { server: sender.id == 'SERVER' }">
+                                <span data-bind="text: sender.name"></span>:
+                                <span data-bind="text: message"></span>
+                            </div>
                         </div>
                     </div>
                 </div>

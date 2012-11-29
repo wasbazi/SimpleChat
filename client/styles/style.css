@@ -23,11 +23,13 @@ input:focus{
     display: inline-block;
     padding: 5px 0;
     background: #CCC;
-    border-radius: 5px;
+    border-radius: 20px;
     box-shadow: 0 0 3px #888;
 }
-#friends{
-    background: #fff;
+#friends {
+    background: white;
+    height: 285px;
+    overflow: hidden;
 }
 #friends li{
     position: relative;
@@ -35,6 +37,27 @@ input:focus{
 #friends i{
     position: absolute;
     right: 0;
+}
+#page-up{
+    margin-top: -5px;
+}
+#page-down{
+    margin-bottom: -5px;
+}
+.friends-pager {
+    font-size: 25px;
+    display: block;
+    text-align: center;
+    opacity: .75;
+    height: 25px;
+}
+.friends-pager a:hover {
+    text-decoration: none;
+    opacity: 1;
+}
+.friends-pager a:active i {
+    position: relative;
+    top: 1px;
 }
 
 /** Chat **/
@@ -52,6 +75,8 @@ input:focus{
     border-radius: 5px;
     box-shadow: 0 0 2px #888;
     height: 300px;
+    position: relative;
+    overflow-y: auto;
 }
 #chat .message-wrapper{
     border-bottom: 1px solid #C8C8C8;
