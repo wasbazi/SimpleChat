@@ -8,10 +8,11 @@ function start(socketsHandler) {
     app.get('/', function (request, response) {
         response.sendfile(__dirname + '/client/index.html');
     });
+    app.use(express.favicon());
 
     socketsHandler(io);
 
-    server.listen(80);
+    server.listen(process.env.PORT || 4444);
     console.log("Server has started.");
 }
 
