@@ -1,0 +1,9 @@
+{
+  "name": "SimpleChat",
+  "author": "Avi <avi@wasbazi.com>",
+  "description": "a simple chat web application",
+  "dependencies" : {
+    "express"   :  "*",
+    "socket.io"   :  "*"
+  }
+}
