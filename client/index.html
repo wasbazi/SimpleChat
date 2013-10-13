@@ -29,7 +29,7 @@
                         <li data-bind="if: $root.id() != id, css:{active: $root.friends.selectedRoom().id == id}">
                             <a href="#" data-bind="click: $root.friends.selectFriend">
                                 <span data-bind="text: name"></span>
-                                <i class="icon-user"></i>
+                                <i class="icon-user" data-bind="css:{unread: unreadMessages}"></i>
                             </a>
                         </li>
                     <!-- /ko -->

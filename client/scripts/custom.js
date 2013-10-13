@@ -8,17 +8,25 @@ var Message = function(data, selected){
 
     this.isVisible = ko.computed(function(){
         if(this.room){
-            console.log('this.room', this.room);
+            // console.log('this.room', this.room);
             return this.room == selected().name;
         }
         if(this.receiver){
-            console.log(this.receiver, selected());
+            // console.log(this.receiver, selected());
             return this.receiver == selected().id || this.sender.id == selected().id;
         }
     }, this);
 };
 
+var FriendViewModel = function(friend){
+    $.extend(this, friend);
+
+    this.unreadMessages = ko.observable(false);
+};
+
 var FriendsListViewModel = function(socket){
+    this._lobby = {type: 'room', name: "lobby", unreadMessages: ko.observable(false)};
+
     this.maxShownUsers = 10;
     this.curPosition = ko.observable(0);
 
@@ -26,21 +34,21 @@ var FriendsListViewModel = function(socket){
 
     this.renderedUsers = ko.computed(function(){
         var numFriendsOnline = this.friendsOnline().length;
-        if( numFriendsOnline < 10)
+        if(numFriendsOnline < 10)
             return this.friendsOnline();
         return this.friendsOnline().slice(this.curPosition(), this.curPosition() + this.maxShownUsers);
     }, this);
 
-    this.selectedRoom = ko.observable({type: 'room', name: 'lobby'});
+    this.selectedRoom = ko.observable(this._lobby);
 
-    this.data = ko.observable();
-    this.data.subscribe( this.updateSelected.bind(this) );
+    this.friendsOnline.subscribe(this.updateSelected.bind(this));
 
     this.selectFriend = function(data, event){
         this.selectedRoom({type: 'user', id: data.id});
+        this.highlightFriend(data.id, false);
     }.bind(this);
     this.selectLobby = function(data, event){
-        this.selectedRoom({type: 'room', name: "lobby"});
+        this.selectedRoom(this._lobby);
     }.bind(this);
 
     this.setSocketListeners(socket);
@@ -48,15 +56,41 @@ var FriendsListViewModel = function(socket){
 };
 
 FriendsListViewModel.prototype = {
-    friendJoined: function(f){ this.friendsOnline.push(f); },
-    friendsList: function(f){ this.friendsOnline(f); },
+    friendJoined: function(f){
+        this.friendsOnline.push(new FriendViewModel(f));
+    },
+    friendsList: function(f){
+        var models = f.map(function(x){
+            return new FriendViewModel(x);
+        });
+        this.friendsOnline(models);
+    },
 
     updateSelected: function(users){
         if(this.selectedRoom().id == data.disconnectedId)
-            this.selectedRoom({type: 'room', name: 'lobby'});
+            this.selectedRoom(this._lobby);
     },
     friendDisconnected: function(data){
-        this.friendsOnline(data.users);
+        var index = -1;
+        this.friendsOnline().filter(function(friend, i){
+            if(friend.id !== data.disconnectedId)
+                return false;
+            index = i;
+            return true;
+        });
+        this.friendsOnline.splice(i, 1);
+    },
+    highlightFriend: function(senderId, unread){
+        unread = typeof(unread) == "undefined" ? true : unread;
+        var sender = this.findFriend(senderId);
+
+        if(sender)
+            sender.unreadMessages(unread);
+    },
+    findFriend: function(userId){
+        return this.friendsOnline().filter(function(user){
+            return user.id == userId;
+        })[0];
     },
     setSocketListeners: function(socket){
         socket.on('friendsList', this.friendsList.bind(this));
@@ -118,6 +152,9 @@ ReservedWordsViewModel.prototype = {
     message: function(data){
         var message = new Message(data, this.friends.selectedRoom);
         this.chats.push(message);
+
+        if(this.friends.selectedRoom().id != data.sender.id)
+            this.friends.highlightFriend(data.sender);
     },
 
     sendMessage: function(value){
@@ -126,10 +163,10 @@ ReservedWordsViewModel.prototype = {
         if(value != ''){
             var message = $.extend({}, this.friends.selectedRoom(), {text: value});
             socket.emit( 'messageSent',  message);
-            this.messageText('')
+            this.messageText('');
         }
     }
 
 };
 
-ko.applyBindings( new ReservedWordsViewModel() );
+ko.applyBindings(new ReservedWordsViewModel());

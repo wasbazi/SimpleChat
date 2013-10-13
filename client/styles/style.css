@@ -38,6 +38,9 @@ input:focus{
     position: absolute;
     right: 0;
 }
+#friends i.unread{
+    color: orangered;
+}
 #page-up{
     margin-top: -5px;
 }
