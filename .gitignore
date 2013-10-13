@@ -2,3 +2,5 @@
 .idea
 #Mac
 .DS_Store
+#Node
+node_modules/
